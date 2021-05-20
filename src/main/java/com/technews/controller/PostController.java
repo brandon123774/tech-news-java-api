@@ -33,8 +33,6 @@ public class PostController {
         }
         return postList;
     }
-
-
     @GetMapping("/api/posts/{id}")
     public Post getPost(@PathVariable Integer id) {
         Post returnPost = repository.getOne(id);
@@ -50,6 +48,7 @@ public class PostController {
         repository.save(post);
         return post;
     }
+
 
     @PutMapping("/api/posts/{id}")
     public Post updatePost(@PathVariable int id, @RequestBody Post post) {

@@ -17,11 +17,13 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
+    private String title;
+    private String postUrl;
     @Transient
     private String userName;
     @Transient
     private int voteCount;
+    private Integer userId;
 
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -33,21 +35,20 @@ public class Post implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt = new Date();
 
-    //Need to use FetchType.LAZY to resolve multiple bags exception
+    // Need to use FetchType.LAZY to resolve multiple bags exception
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
-    public Post(){
 
+    public Post() {
     }
 
-    public Post(Integer id, String userName, int voteCount, Date postedAt, Date updatedAt, List<Comment> comments) {
+    public Post(Integer id, String title, String postUrl, int voteCount, Integer userId) {
         this.id = id;
-        this.userName = userName;
+        this.title = title;
+        this.postUrl = postUrl;
         this.voteCount = voteCount;
-        this.postedAt = postedAt;
-        this.updatedAt = updatedAt;
-        this.comments = comments;
+        this.userId = userId;
     }
 
     public Integer getId() {
@@ -56,6 +57,21 @@ public class Post implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPostUrl() {
+        return postUrl;
+    }
+
+    public void setPostUrl(String postUrl) {
+        this.postUrl = postUrl;
     }
 
     public String getUserName() {
@@ -72,6 +88,14 @@ public class Post implements Serializable {
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Date getPostedAt() {
@@ -97,26 +121,36 @@ public class Post implements Serializable {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Post)) return false;
         Post post = (Post) o;
-        return voteCount == post.voteCount && Objects.equals(id, post.id) && Objects.equals(userName, post.userName) && Objects.equals(postedAt, post.postedAt) && Objects.equals(updatedAt, post.updatedAt) && Objects.equals(comments, post.comments);
+        return getVoteCount() == post.getVoteCount() &&
+                Objects.equals(getId(), post.getId()) &&
+                Objects.equals(getTitle(), post.getTitle()) &&
+                Objects.equals(getPostUrl(), post.getPostUrl()) &&
+                Objects.equals(getUserName(), post.getUserName()) &&
+                Objects.equals(getUserId(), post.getUserId()) &&
+                Objects.equals(getPostedAt(), post.getPostedAt()) &&
+                Objects.equals(getUpdatedAt(), post.getUpdatedAt()) &&
+                Objects.equals(getComments(), post.getComments());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, voteCount, postedAt, updatedAt, comments);
+        return Objects.hash(getId(), getTitle(), getPostUrl(), getUserName(), getVoteCount(), getUserId(), getPostedAt(), getUpdatedAt(), getComments());
     }
 
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
+                ", title='" + title + '\'' +
+                ", postUrl='" + postUrl + '\'' +
                 ", userName='" + userName + '\'' +
                 ", voteCount=" + voteCount +
+                ", userId=" + userId +
                 ", postedAt=" + postedAt +
                 ", updatedAt=" + updatedAt +
                 ", comments=" + comments +
